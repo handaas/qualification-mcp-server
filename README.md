@@ -235,7 +235,7 @@ python server/mcp_server.py streamable-http
 ### qualification_bigdata_enterprise_qualifications (企业资质信息查询)
 6. 百度的企业资质总共有多少个？主要分布在哪些类别？
 7. 腾讯的科技研发类资质有哪些？是什么级别的？
-8. 字节跳动的高新技术企业资质情况如何？
+8. 抖音的高新技术企业资质情况如何？
 
 ### qualification_bigdata_administrative_licenses (行政许可信息查询)
 9. 阿里巴巴有哪些行政许可？许可机关是谁？
