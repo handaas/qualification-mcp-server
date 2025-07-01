@@ -76,7 +76,6 @@ def qualification_bigdata_honor_qualifications(matchKeyword: str, keywordType: s
 
     返回参数:
     - total: 总数 类型：int
-    - resultList: 结果列表 类型：list of dict
     - eaqBeginDate: 有效期开始日期 类型：string
     - eaqPublishDate: 发布日期 类型：string
     - eaqRecognitionLevel: 资质级别 类型：string
@@ -113,7 +112,6 @@ def qualification_bigdata_enterprise_qualifications(matchKeyword: str, keywordTy
 
     返回参数:
     - total: 资质总数 类型：int
-    - resultList: 资质信息列表 类型：list of dict
     - qualificationClasses: 企业资质分类 类型：string - 1：企业创新与成长类，2：科技研发与创新类，3：科技服务与孵化类，4：知识产权类，5：产业升级与转型类
     - qualificationType: 资质类型 类型：string
     - publishYear: 发布年份 类型：int
@@ -151,7 +149,6 @@ def qualification_bigdata_fuzzy_search(matchKeyword: str, pageIndex: int = 1, pa
 
     返回参数:
     - total: 总数 类型：int
-    - resultList: 结果列表 类型：list of dict
     - annualTurnover: 年营业额 类型：string
     - formerNames: 曾用名 类型：list of string
     - address: 注册地址 类型：string
@@ -213,7 +210,6 @@ def qualification_bigdata_administrative_licenses(matchKeyword: str, pageSize: i
 
     返回参数:
     - total: 总数 类型：int
-    - resultList: 列表结果 类型：list of dict
     - authority: 许可机关 类型：string
     - auditType: 审核类型 类型：string
     - beginDate: 许可有效期自 类型：string
@@ -283,7 +279,6 @@ def qualification_bigdata_hitech_enterprise_cert(matchKeyword: str, pageIndex: i
 
     返回参数:
     - total: 总数 类型：int
-    - resultList: 列表结果 类型：list of dict
     - certId: 证书编号 类型：string
     - certStatus: 证书状态 类型：string
     - certPublishTime: 颁证日期 类型：string
