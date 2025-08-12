@@ -9,7 +9,7 @@ import sys
 
 load_dotenv()
 
-mcp = FastMCP("资质大数据", instructions="资质大数据",dependencies=["python-dotenv", "requests"])
+mcp = FastMCP("资质大数据", instructions="资质大数据", dependencies=["python-dotenv", "requests"])
 
 INTEGRATOR_ID = os.environ.get("INTEGRATOR_ID")
 SECRET_ID = os.environ.get("SECRET_ID")
@@ -80,13 +80,14 @@ def qualification_bigdata_honor_qualifications(matchKeyword: str, keywordType: s
 
     返回参数:
     - total: 总数 类型：int
-    - eaqBeginDate: 有效期开始日期 类型：string
-    - eaqPublishDate: 发布日期 类型：string
-    - eaqRecognitionLevel: 资质级别 类型：string
-    - eaqTitle: 公告标题 类型：string
-    - eaqEndDate: 有效期截止日期 类型：string
-    - eaqType: 资质类型 类型：string
-    - eaqAuthority: 认定机关 类型：string
+    - resultList: 结果列表 类型：list of dict
+        - eaqBeginDate: 有效期开始日期 类型：string
+        - eaqPublishDate: 发布日期 类型：string
+        - eaqRecognitionLevel: 资质级别 类型：string
+        - eaqTitle: 公告标题 类型：string
+        - eaqEndDate: 有效期截止日期 类型：string
+        - eaqType: 资质类型 类型：string
+        - eaqAuthority: 认定机关 类型：string
     """
     # 构建请求参数
     params = {
@@ -103,7 +104,7 @@ def qualification_bigdata_honor_qualifications(matchKeyword: str, keywordType: s
 
 @mcp.tool()
 def qualification_bigdata_enterprise_qualifications(matchKeyword: str, keywordType: str = None, pageIndex: int = 1,
-                              pageSize: int = None) -> dict:
+                              pageSize: int = 10) -> dict:
     """
     该接口的功能是查询和返回企业的资质信息，通过输入企业名称、注册号、统一社会信用代码或企业ID等信息，能够获取企业的资质总数、资质信息列表、企业资质分类、资质类型、发布年份、发布日期、资质级别、发布单位、高新行业分类以及绿色设计等多维度数据。此接口可广泛应用于企业合作评估、项目招投标、行业监管、市场调研等场景，帮助用户全面了解企业的资质水平和专业能力。例如，企业在参与项目投标时，可利用该接口查询自身资质是否符合要求；合作伙伴可通过此接口核实企业的资质真实性，以评估合作风险；政府部门也可借此进行行业资质监管，规范市场秩序。
 
@@ -111,19 +112,20 @@ def qualification_bigdata_enterprise_qualifications(matchKeyword: str, keywordTy
     请求参数:
     - matchKeyword: 匹配关键词 类型：string - 企业名称/注册号/统一社会信用代码/企业id，如果没有企业全称则先调取fuzzy_search接口获取企业全称。
     - keywordType: 主体类型 类型：select - 主体类型枚举（name：企业名称，nameId：企业id，regNumber：注册号，socialCreditCode：统一社会信用代码)
-    - pageIndex: 页码 类型：int - 从1开始
-    - pageSize: 分页大小 类型：int - 一页最多获取10条数据
+    - pageIndex: 页码 类型：int - 默认从1开始
+    - pageSize: 分页大小 类型：int - 一页最多获取10条数据, 不能超过10, 超过10的统一用10代替。
 
     返回参数:
     - total: 资质总数 类型：int
-    - qualificationClasses: 企业资质分类 类型：string - 1：企业创新与成长类，2：科技研发与创新类，3：科技服务与孵化类，4：知识产权类，5：产业升级与转型类
-    - qualificationType: 资质类型 类型：string
-    - publishYear: 发布年份 类型：int
-    - publishDate: 发布日期 类型：string
-    - qualificationLevel: 资质级别 类型：string
-    - agency: 发布单位 类型：string
-    - highTechIndustryList: 高新行业分类 类型：list of string
-    - greenProducts: 绿色设计产品 类型：string
+    - resultList: 资质信息列表 类型：list of dict
+        - qualificationClasses: 企业资质分类 类型：string - 1：企业创新与成长类，2：科技研发与创新类，3：科技服务与孵化类，4：知识产权类，5：产业升级与转型类
+        - qualificationType: 资质类型 类型：string
+        - publishYear: 发布年份 类型：int
+        - publishDate: 发布日期 类型：string
+        - qualificationLevel: 资质级别 类型：string
+        - agency: 发布单位 类型：string
+        - highTechIndustryList: 高新行业分类 类型：list of string
+        - greenProducts: 绿色设计产品 类型：string
     """
     # 构建请求参数
     params = {
@@ -141,49 +143,49 @@ def qualification_bigdata_enterprise_qualifications(matchKeyword: str, keywordTy
 
 
 @mcp.tool()
-def qualification_bigdata_fuzzy_search(matchKeyword: str, pageIndex: int = 1, pageSize: int = None) -> dict:
+def qualification_bigdata_fuzzy_search(matchKeyword: str, pageIndex: int = 1, pageSize: int = 50) -> dict:
     """
     该接口的功能是根据提供的企业名称、人名、品牌、产品、岗位等关键词模糊查询相关企业列表。返回匹配的企业列表及其详细信息，用于查找和识别特定的企业信息。
 
 
     请求参数:
     - matchKeyword: 匹配关键词 类型：string - 查询各类信息包含匹配关键词的企业
-    - pageIndex: 分页开始位置 类型：int
-    - pageSize: 分页结束位置 类型：int - 一页最多获取50条数据
+    - pageIndex: 分页开始位置 类型：int - 默认从1开始
+    - pageSize: 分页结束位置 类型：int - 一页最多获取50条数据, 不能超过50, 超过50的统一用50代替
 
     返回参数:
     - total: 总数 类型：int
-    - annualTurnover: 年营业额 类型：string
-    - formerNames: 曾用名 类型：list of string
-    - address: 注册地址 类型：string
-    - foundTime: 成立时间 类型：string
-    - enterpriseType: 企业主体类型 类型：string
-    - legalRepresentative: 法定代表人 类型：string
-    - homepage: 企业官网 类型：string
-    - legalRepresentativeId: 法定代表人id 类型：string
-    - prmtKeys: 推广关键词 类型：list of string
-    - operStatus: 企业状态 类型：string
-    - logo: 企业logo 类型：string
-    - nameId: 企业id 类型：string
-    - regCapitalCoinType: 注册资本币种 类型：string
-    - regCapitalValue: 注册资本金额 类型：int
-    - name: 企业名称 类型：string
-    - catchReason: 命中原因 类型：dict
-    - catchReason.name: 企业名称 类型：list of string
-    - catchReason.formerNames: 曾用名 类型：list of string
-    - catchReason.holderList: 股东 类型：list of string
-    - catchReason.recruitingName: 招聘岗位 类型：list of string
-    - catchReason.address: 地址 类型：list of string
-    - catchReason.operBrandList: 品牌 类型：list of string
-    - catchReason.goodsNameList: 产品名称 类型：list of string
-    - catchReason.phoneList: 固话 类型：list of string
-    - catchReason.emailList: 邮箱 类型：list of string
-    - catchReason.mobileList: 手机 类型：list of string
-    - catchReason.patentNameList: 专利 类型：list of string
-    - catchReason.certNameList: 资质证书 类型：list of string
-    - catchReason.prmtKeys: 推广关键词 类型：list of string
-    - catchReason.socialCreditCode: 统一社会信用代码 类型：list of string
-
+    - resultList:查询返回企业信息列表 类型：list of dict:
+        - annualTurnover: 年营业额 类型：string
+        - formerNames: 曾用名 类型：list of string
+        - address: 注册地址 类型：string
+        - foundTime: 成立时间 类型：string
+        - enterpriseType: 企业主体类型 类型：string
+        - legalRepresentative: 法定代表人 类型：string
+        - legalRepresentativeId: 法定代表人id 类型：string
+        - homepage: 企业官网 类型：string
+        - prmtKeys: 推广关键词 类型：list of string
+        - operStatus: 企业状态 类型：string
+        - logo: 企业logo 类型：string
+        - nameId: 企业id 类型：string
+        - regCapitalCoinType: 注册资本币种 类型：string
+        - regCapitalValue: 注册资本金额 类型：int
+        - name: 企业名称 类型：string
+        - catchReason: 命中原因 类型：dict
+            - catchReason.name: 企业名称 类型：list of string
+            - catchReason.formerNames: 曾用名 类型：list of string
+            - catchReason.holderList: 股东 类型：list of string
+            - catchReason.recruitingName: 招聘岗位 类型：list of string
+            - catchReason.address: 地址 类型：list of string
+            - catchReason.operBrandList: 品牌 类型：list of string
+            - catchReason.goodsNameList: 产品名称 类型：list of string
+            - catchReason.phoneList: 固话 类型：list of string
+            - catchReason.emailList: 邮箱 类型：list of string
+            - catchReason.mobileList: 手机 类型：list of string
+            - catchReason.patentNameList: 专利 类型：list of string
+            - catchReason.certNameList: 资质证书 类型：list of string
+            - catchReason.prmtKeys: 推广关键词 类型：list of string
+            - catchReason.socialCreditCode: 统一社会信用代码 类型：list of string
     """
     # 构建请求参数
     params = {
@@ -207,21 +209,22 @@ def qualification_bigdata_administrative_licenses(matchKeyword: str, pageSize: i
 
 
     请求参数:
-    - pageSize: 分页大小 类型：int - 一页最多获取50条数据
+    - pageSize: 分页大小 类型：int - 一页最多获取50条数据, 不能超过50, 超过50的统一用50代替
     - matchKeyword: 匹配关键词 类型：string - 企业名称/注册号/统一社会信用代码/企业id，如果没有企业全称则先调取fuzzy_search接口获取企业全称。
-    - pageIndex: 页码 类型：int - 从1开始
+    - pageIndex: 页码 类型：int - 默认从1开始
     - keywordType: 主体类型 类型：select - 主体类型枚举（name：企业名称，nameId：企业id，regNumber：注册号，socialCreditCode：统一社会信用代码)
 
     返回参数:
     - total: 总数 类型：int
-    - authority: 许可机关 类型：string
-    - auditType: 审核类型 类型：string
-    - beginDate: 许可有效期自 类型：string
-    - content: 许可内容 类型：string
-    - status: 当前状态 类型：string
-    - endDate: 许可有效期至 类型：string
-    - creditPubLicenseId: 行政许可决定文书号 类型：string
-    - fileName: 行政许可决定文书名称 类型：string
+    - resultList: 列表结果 类型：list of dict
+        - authority: 许可机关 类型：string
+        - auditType: 审核类型 类型：string
+        - beginDate: 许可有效期自 类型：string
+        - content: 许可内容 类型：string
+        - status: 当前状态 类型：string
+        - endDate: 许可有效期至 类型：string
+        - creditPubLicenseId: 行政许可决定文书号 类型：string
+        - fileName: 行政许可决定文书名称 类型：string
     """
     # 构建请求参数
     params = {
@@ -276,19 +279,20 @@ def qualification_bigdata_hitech_enterprise_cert(matchKeyword: str, pageIndex: i
 
 
     请求参数:
-    - pageIndex: 页码 类型：int - 从1开始
+    - pageIndex: 页码 类型：int - 默认从1开始
     - matchKeyword: 匹配关键词 类型：string - 企业名称/注册号/统一社会信用代码/企业id，如果没有企业全称则先调取fuzzy_search接口获取企业全称。
-    - pageSize: 分页大小 类型：int - 一页最多获取50条数据
+    - pageSize: 分页大小 类型：int - 一页最多获取50条数据, 不能超过50, 超过50的统一用50代替
     - keywordType: 主体类型 类型：select - 主体类型枚举（name：企业名称，nameId：企业id，regNumber：注册号，socialCreditCode：统一社会信用代码)
 
     返回参数:
     - total: 总数 类型：int
-    - certId: 证书编号 类型：string
-    - certStatus: 证书状态 类型：string
-    - certPublishTime: 颁证日期 类型：string
-    - certAuthority: 发证机构 类型：string
-    - certType: 资质类别 类型：string
-    - certExpireTime: 截止日期 类型：string
+    - resultList: 列表结果 类型：list of dict
+        - certId: 证书编号 类型：string
+        - certStatus: 证书状态 类型：string
+        - certPublishTime: 颁证日期 类型：string
+        - certAuthority: 发证机构 类型：string
+        - certType: 资质类别 类型：string
+        - certExpireTime: 截止日期 类型：string
     """
     # 构建请求参数
     params = {
