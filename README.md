@@ -101,7 +101,7 @@ python server/mcp_server.py streamable-http
   "mcpServers": {
     "qualification-mcp-server":{
       "type": "streamableHttp",
-      "url": "https://mcp.handaas.com/bidding/bidding_bigdata?token={token}"  
+      "url": "https://mcp.handaas.com/qualification/qualification_bigdata?token={token}"
       }
   }
 }
